@@ -62,7 +62,7 @@ fun InputTextField(modifier: Modifier) {
                     newErrors.add(InputError.DigitsNotAllowed)
                 }
 
-                if(newText.length > sizeLimit){
+                if (newText.length > sizeLimit) {
                     newErrors.add(InputError.SizeExceeded)
                 }
 
@@ -157,7 +157,12 @@ fun InputTextField(modifier: Modifier) {
                 value = sizeLimit,
                 modifier = Modifier,
                 range = 4..24,
-                onValueChange = { sizeLimit = it })
+                onValueChange = {
+                    sizeLimit = it
+                    if(it < text.length){
+                        text = text.dropLast(text.length - it)
+                    }
+                })
         }
 
     }
