@@ -5,4 +5,5 @@ sealed class InputError(val message: String) {
     object LowercaseNotAllowed : InputError("Małe litery są niedozwolone")
     object NonAlphanumericNotAllowed : InputError("Dozwolone są tylko znaki alfanumeryczne")
     object DigitsNotAllowed : InputError("Cyfry są niedozwolone")
+    object SizeExceeded : InputError("Maksymalna długość tekstu została przekroczona")
 }

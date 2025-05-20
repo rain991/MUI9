@@ -9,33 +9,31 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.chargemap.compose.numberpicker.NumberPicker
 import com.example.mui8.data.InputError
 
 @Composable
-fun InputTextField(modifier : Modifier) {
+fun InputTextField(modifier: Modifier) {
     var text by remember { mutableStateOf("") }
     var errors by remember { mutableStateOf<List<InputError>>(emptyList()) }
 
+    var sizeLimit by remember { mutableIntStateOf(8) }
     var blockUppercase by remember { mutableStateOf(false) }
     var blockLowercase by remember { mutableStateOf(false) }
     var blockNonAlphanumeric by remember { mutableStateOf(false) }
@@ -64,6 +62,10 @@ fun InputTextField(modifier : Modifier) {
                     newErrors.add(InputError.DigitsNotAllowed)
                 }
 
+                if(newText.length > sizeLimit){
+                    newErrors.add(InputError.SizeExceeded)
+                }
+
                 if (newErrors.isEmpty()) {
                     text = newText
                 }
@@ -75,7 +77,7 @@ fun InputTextField(modifier : Modifier) {
         )
         Spacer(modifier = Modifier.height(14.dp))
         errors.forEach {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Text(
                     text = it.message,
                     color = Color.Red,
@@ -94,28 +96,69 @@ fun InputTextField(modifier : Modifier) {
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text("Blokuj wielkie litery")
             Spacer(modifier = Modifier.width(8.dp))
             Switch(checked = blockUppercase, onCheckedChange = { blockUppercase = it })
         }
 
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text("Blokuj małe litery")
             Spacer(modifier = Modifier.width(8.dp))
             Switch(checked = blockLowercase, onCheckedChange = { blockLowercase = it })
         }
 
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text("Blokuj znaki niealfanumeryczne")
             Spacer(modifier = Modifier.width(8.dp))
             Switch(checked = blockNonAlphanumeric, onCheckedChange = { blockNonAlphanumeric = it })
         }
 
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text("Blokuj cyfry")
             Spacer(modifier = Modifier.width(8.dp))
             Switch(checked = blockDigits, onCheckedChange = { blockDigits = it })
         }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Ograniczenie długości")
+            Spacer(modifier = Modifier.width(8.dp))
+            NumberPicker(
+                value = sizeLimit,
+                modifier = Modifier,
+                range = 4..24,
+                onValueChange = { sizeLimit = it })
+        }
+
     }
 }
